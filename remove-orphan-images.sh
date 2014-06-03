@@ -63,7 +63,7 @@ for library in $repository_dir/*; do
         echo " Repo $(basename $repo)" >&2
         mkdir -p "$output_dir/$(basename $repo)"
         jq '.' "$repo/_index_images" > "$output_dir/$(basename $repo)/_index_images.old"
-        jq -s '.[2:] as $unused_images | .[0] | map(select(.id as $id | $unused_images | reduce .[] as $unused_image (true; . and $id != $unused_image) ))' "$repo/_index_images" $unused_images_flatten > "$output_dir/$(basename $repo)/_index_images"
+        jq -s '.[1:] as $unused_images | .[0] | map(select(.id as $id | $unused_images | reduce .[] as $unused_image (true; . and $id != $unused_image) ))' "$repo/_index_images" $unused_images_flatten > "$output_dir/$(basename $repo)/_index_images"
         cp "$output_dir/$(basename $repo)/_index_images" "$repo/_index_images"
     done
 done
