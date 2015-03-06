@@ -1,11 +1,17 @@
 #!/bin/bash
 
+JQPATH=$(which jq)
+if [ "x$JQPATH" == "x" ]; then
+  echo "Couldn't find jq executable." 1>&2
+  exit 2
+fi
+
 set -eu
 shopt -s nullglob
 
 readonly base_dir=/var/lib/docker/registry
 readonly output_dir=$(mktemp -d -t trace-images-XXXX)
-readonly jq=/usr/bin/jq
+readonly jq=$JQPATH
 
 readonly repository_dir=$base_dir/repositories
 readonly image_dir=$base_dir/images
