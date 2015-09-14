@@ -14,6 +14,15 @@ class Application
     @args = args
   end
 
+  def log_stream
+    @log_stream ||= File.open('/tmp/docker-remove-orphan-images.log', 'a')
+  end
+
+  def info(str)
+    log_stream.puts "INFO: #{str}"
+    puts "INFO: #{str}"
+  end
+
   def repository_dir
     base_dir + 'repositories'
   end
@@ -68,11 +77,7 @@ class Application
   end
 
   def timestamp
-    @timestamp ||= Time.new - (60 * 60)
-  end
-
-  def info(str)
-    puts "INFO: #{str}"
+    @timestamp ||= Time.new - (60 * 60) # in seconds
   end
 
   def remove_index_references!
@@ -98,6 +103,8 @@ class Application
   def run
     remove_index_references!
     remove_unused_images!
+  ensure
+    log_stream.close unless log_stream.closed?
   end
 end
 
