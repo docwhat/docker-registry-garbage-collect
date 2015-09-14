@@ -1,0 +1,11 @@
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Style/FileName:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/LineLength:
+  Max: 120
