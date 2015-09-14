@@ -7,6 +7,11 @@ This happens when you push up "foobar:latest" and it clobbers a previous
 "foobar:latest".  The images that made up the previous versions are now
 orphaned and left floating in limbo.
 
+## Notes
+
+For maximum paranoia, the script will not remove images from the last hour.
+This is in case you're uploading something that hasn't been tagged yet.
+
 ## License
 
 Public domain.  This stuff is trivial and it is needed.
