@@ -49,13 +49,14 @@ class Application
       .map(&:children)
       .flatten
       .select { |p| p.basename.to_s =~ /^tag_/ }
-      .reject { |p| p.mtime >= timestamp }
   end
 
   def all_image_hashes
     @all_image_hashes ||= image_dir
       .children
       .select(&:directory?)
+      .select { |p| (p + '_checksum').exist? }
+      .reject { |p| (p + '_checksum').mtime >= timestamp }
       .map(&:basename)
       .map(&:to_s)
   end
