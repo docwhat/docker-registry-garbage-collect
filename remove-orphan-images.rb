@@ -16,6 +16,7 @@ class Application
 
   def log_stream
     @log_stream ||= File.open('/tmp/docker-remove-orphan-images.log', 'a')
+      .tap { |l| l.puts "*** STARTING AT #{Time.now} ***" }
   end
 
   def info(str)
