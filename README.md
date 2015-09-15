@@ -1,4 +1,7 @@
-# remove-orphan-images
+# docker-registry-garbage-collect
+
+> The new home page is [docwhat/docker-registry-garbage-collect on
+github](https://github.com/docwhat/docker-registry-garbage-collect).
 
 Docker Registery version 1 has one huge glaring problem:  It doesn't clean up
 "dangling" or "orphaned" images.
