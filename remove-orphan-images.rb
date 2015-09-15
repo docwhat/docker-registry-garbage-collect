@@ -10,8 +10,38 @@ class Application
   attr_reader :base_dir
 
   def initialize(args)
-    @base_dir = Pathname.new('/data/registry')
+    @base_dir = Pathname.new('/var/lib/docker/registry')
     @args = args
+  end
+
+  def optparser
+    @optparser ||= OptionParser.new do |opts|
+      opts.banner = <<-BANNER
+Usage: #{opts.program_name} [options]
+
+Removes orphaned or dangling images from Docker Registry v1.
+      BANNER
+
+      opts.separator ''
+
+      opts.on(
+        '-d',
+        '--directory DIRECTORY',
+        "The directory where the registry data is stored (default #{base_dir})"
+      ) do |d|
+        dir = Pathname.new(d).expand_path
+        fail "#{dir} is not a directory!" unless dir.directory?
+        @base_dir = dir
+      end
+
+      opts.on(
+        '-s',
+        '--saftey-margin SECONDS',
+        "How many seconds an image must exist on disk before it can be removed (default #{safety_margin_seconds})"
+      ) do |s|
+        @safety_margin_seconds = Integer(s)
+      end
+    end
   end
 
   def log_stream
@@ -20,7 +50,6 @@ class Application
   end
 
   def info(str)
-    log_stream.puts "INFO: #{str}"
     puts "INFO: #{str}"
   end
 
@@ -78,8 +107,12 @@ class Application
     @unused_image_hashes ||= all_image_hashes - used_image_hashes
   end
 
+  def safety_margin_seconds
+    @safety_margin_seconds ||= 60 * 60
+  end
+
   def timestamp
-    @timestamp ||= Time.new - (60 * 60) # in seconds
+    @timestamp ||= Time.new - safety_margin_seconds
   end
 
   def remove_index_references!
@@ -103,6 +136,7 @@ class Application
   end
 
   def run
+    optparser.parse!
     remove_index_references!
     remove_unused_images!
   ensure
